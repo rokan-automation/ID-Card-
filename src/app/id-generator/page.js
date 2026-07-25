@@ -474,9 +474,8 @@ export default function IDGenerator() {
                         <div className="absolute bottom-0 w-full h-[10pt] bg-gradient-to-r from-green-800 via-emerald-500 to-green-900 border-t border-yellow-400"></div>
                       </div>
 
-                      {/* প্রিভিউ ব্যাক সাইড */}
+                      {/* প্রিভিউ ব্যাক সাইড (ওয়াটারমার্ক ছাড়া) */}
                       <div className="id-card portrait relative overflow-hidden bg-white border border-slate-300 shadow-md flex-shrink-0 scale-95 xs:scale-100">
-                         <img src="/logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
@@ -588,18 +587,17 @@ export default function IDGenerator() {
                   })}
                 </div>
 
-                {/* ব্যাক সাইড পেজ */}
+                {/* ব্যাক সাইড পেজ (ওয়াটারমার্ক ছাড়া) */}
                 <div className="print-page">
                   {backBatchOrdered.map((student, idx) => {
                     if (!student) return <div key={`empty-back-${idx}`} className="empty-card-spacer"></div>;
 
                     return (
                       <div key={`back-${student.id}`} className="id-card portrait relative overflow-hidden bg-white border border-slate-400 text-black">
-                         <img src="/logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
-                              <h4 className="font-bold border-b border-indigo-200 pb-1 mb-3 text-[8.5pt] z-0 indigo-800 uppercase tracking-tighter">Rules & Regulations</h4>
+                              <h4 className="font-bold border-b border-indigo-200 pb-1 mb-3 text-[8.5pt] text-indigo-800 uppercase tracking-tighter">Rules & Regulations</h4>
                               <ul className="text-[7.2pt] font-bold text-slate-700 space-y-2 list-none">
                                 <li>• Please carry this card during college hours.</li>
                                 <li>• If found anywhere, please return to office.</li>
@@ -676,9 +674,9 @@ export default function IDGenerator() {
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[150] flex items-center justify-center p-4 no-print animate-in fade-in">
             <div className="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl border-4 border-slate-100">
                 <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter underline decoration-red-500">Wait!</h3>
-                <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?ோ</p>
+                <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?</p>
                 <div className="flex gap-4">
-                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel</button>
+                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel0</button>
                     <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer">Delete</button>
                 </div>
             </div>
@@ -697,7 +695,7 @@ export default function IDGenerator() {
           print-color-adjust: exact; 
         }
         .empty-card-spacer {
-          width: 146pt;
+          width: 146pt; 
           height: 238pt;
           visibility: hidden;
         }
@@ -710,7 +708,7 @@ export default function IDGenerator() {
         }
         
         @media print { 
-          @package {
+          @page {
             size: A4;
             margin: 0 !important;
           }
