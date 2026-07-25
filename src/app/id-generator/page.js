@@ -599,7 +599,7 @@ export default function IDGenerator() {
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
-                              <h4 className="font-bold border-b border-indigo-200 pb-1 mb-3 text-[8.5pt] text-indigo-800 uppercase tracking-tighter">Rules & Regulations</h4>
+                              <h4 className="font-bold border-b border-indigo-200 pb-1 mb-3 text-[8.5pt] z-0 indigo-800 uppercase tracking-tighter">Rules & Regulations</h4>
                               <ul className="text-[7.2pt] font-bold text-slate-700 space-y-2 list-none">
                                 <li>• Please carry this card during college hours.</li>
                                 <li>• If found anywhere, please return to office.</li>
@@ -676,7 +676,7 @@ export default function IDGenerator() {
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[150] flex items-center justify-center p-4 no-print animate-in fade-in">
             <div className="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl border-4 border-slate-100">
                 <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter underline decoration-red-500">Wait!</h3>
-                <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?</p>
+                <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?ோ</p>
                 <div className="flex gap-4">
                     <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel</button>
                     <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer">Delete</button>
@@ -697,7 +697,8 @@ export default function IDGenerator() {
           print-color-adjust: exact; 
         }
         .empty-card-spacer {
-          width: `height: 238pt;
+          width: 146pt;
+          height: 238pt;
           visibility: hidden;
         }
         .data-grid { 
@@ -709,7 +710,7 @@ export default function IDGenerator() {
         }
         
         @media print { 
-          @page {
+          @package {
             size: A4;
             margin: 0 !important;
           }
