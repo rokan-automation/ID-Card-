@@ -476,7 +476,7 @@ export default function IDGenerator() {
 
                       {/* প্রিভিউ ব্যাক সাইড */}
                       <div className="id-card portrait relative overflow-hidden bg-white border border-slate-300 shadow-md flex-shrink-0 scale-95 xs:scale-100">
-                         <img src="/Logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
+                         <img src="/logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
@@ -595,7 +595,7 @@ export default function IDGenerator() {
 
                     return (
                       <div key={`back-${student.id}`} className="id-card portrait relative overflow-hidden bg-white border border-slate-400 text-black">
-                         <img src="/Logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
+                         <img src="/logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
@@ -697,8 +697,7 @@ export default function IDGenerator() {
           print-color-adjust: exact; 
         }
         .empty-card-spacer {
-          width: 146pt; 
-          height: 238pt;
+          width: `height: 238pt;
           visibility: hidden;
         }
         .data-grid { 
