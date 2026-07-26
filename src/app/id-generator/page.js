@@ -214,7 +214,6 @@ export default function IDGenerator() {
     try {
       showToast("Verifying Admin ID...", "warning");
       
-      // নতুন admin_settings টেবিল থেকে এন্ট্রি মেলানো হচ্ছে
       const { data, error } = await supabase
         .from('admin_settings')
         .select('*')
@@ -224,7 +223,7 @@ export default function IDGenerator() {
         showToast(error.message, "error");
       } else if (data && data.length > 0) {
         setIsAdmin(true);
-        localStorage.setItem('id_generator_admin', 'true'); // ব্রাউজার মেমোরিতে সেশন সেভ রাখা
+        localStorage.setItem('id_generator_admin', 'true');
         setShowLoginModal(false);
         setAdminUserId('');
         fetchStudents();
@@ -240,7 +239,7 @@ export default function IDGenerator() {
   // এডমিন লগআউট হ্যান্ডলার
   const handleAdminLogout = () => {
     setIsAdmin(false);
-    localStorage.removeItem('id_generator_admin'); // ব্রাউজার মেমোরি থেকে সেশন মুছে ফেলা
+    localStorage.removeItem('id_generator_admin');
     setFilteredStudents([]);
     setPrintQueue([]);
     showToast("Logged out from admin panel", "info");
@@ -286,7 +285,6 @@ export default function IDGenerator() {
             <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase tracking-tighter">Student Registration Form</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
               
-              {/* এডমিন হলে কলেজের নাম, অ্যাড্রেস পরিবর্তন করতে পারবে, শিক্ষার্থী মোডে এটি হাইড থাকবে */}
               {isAdmin && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-dashed border-indigo-200 animate-in slide-in-from-top-4">
                     <input className="border p-2 rounded-lg text-xs" placeholder="COLLEGE NAME" value={collegeName} onChange={e => setCollegeName(e.target.value)} />
@@ -474,7 +472,7 @@ export default function IDGenerator() {
                         <div className="absolute bottom-0 w-full h-[10pt] bg-gradient-to-r from-green-800 via-emerald-500 to-green-900 border-t border-yellow-400"></div>
                       </div>
 
-                      {/* প্রিভিউ ব্যাক সাইড (ওয়াটারমার্ক ছাড়া) */}
+                      {/* প্রিভিউ ব্যাক সাইড */}
                       <div className="id-card portrait relative overflow-hidden bg-white border border-slate-300 shadow-md flex-shrink-0 scale-95 xs:scale-100">
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
@@ -587,7 +585,7 @@ export default function IDGenerator() {
                   })}
                 </div>
 
-                {/* ব্যাক সাইড পেজ (ওয়াটারমার্ক ছাড়া) */}
+                {/* ব্যাক সাইড পেজ */}
                 <div className="print-page">
                   {backBatchOrdered.map((student, idx) => {
                     if (!student) return <div key={`empty-back-${idx}`} className="empty-card-spacer"></div>;
@@ -639,7 +637,7 @@ export default function IDGenerator() {
         )}
       </footer>
 
-      {/* --- এডমিন লগইন মোডাল (শুধুমাত্র একটি User ID বক্স) --- */}
+      {/* --- এডমিন লগইন মোডাল --- */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="bg-white rounded-[2rem] p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border-4 border-slate-100 relative animate-in fade-in zoom-in-95 duration-200">
@@ -676,14 +674,14 @@ export default function IDGenerator() {
                 <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter underline decoration-red-500">Wait!</h3>
                 <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?</p>
                 <div className="flex gap-4">
-                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel0</button>
+                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel</button>
                     <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer">Delete</button>
                 </div>
             </div>
         </div>
       )}
 
-      {/* CSS Styles */}
+      {/* Precise CSS Styles for Pixel-Perfect A4 Alignment */}
       <style jsx>{`
         .id-card { 
           width: 146pt; 
@@ -709,13 +707,17 @@ export default function IDGenerator() {
         
         @media print { 
           @page {
-            size: A4;
+            size: A4 portrait;
             margin: 0 !important;
           }
-          body { 
-            background: white !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
+          html, body {
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .no-print { 
             display: none !important; 
@@ -726,15 +728,15 @@ export default function IDGenerator() {
             break-inside: avoid !important;
           }
           .print-page {
-            width: 210mm;
-            height: 297mm;
+            width: 210mm !important;
+            height: 297mm !important;
             display: grid !important;
-            grid-template-columns: repeat(3, 146pt);
-            grid-template-rows: repeat(3, 238pt);
-            gap: 15pt;
-            justify-content: center;
-            align-content: center;
-            box-sizing: border-box;
+            grid-template-columns: repeat(3, 146pt) !important;
+            grid-template-rows: repeat(3, 238pt) !important;
+            gap: 12pt 15pt !important;
+            justify-content: center !important;
+            align-content: center !important;
+            box-sizing: border-box !important;
             page-break-after: always !important;
             break-after: page !important;
             margin: 0 auto !important;
@@ -747,8 +749,9 @@ export default function IDGenerator() {
           }
           .id-card { 
             border: 0.5pt solid #000 !important; 
-            border-radius: 0; 
+            border-radius: 0 !important; 
             box-shadow: none !important; 
+            box-sizing: border-box !important;
           }
         }
       `}</style>
