@@ -257,14 +257,17 @@ export default function IDGenerator() {
 
   const printBatches = chunkArray(printQueue, 9);
 
+  // কমন ইনপুট স্টাইল - স্পষ্ট প্লেসহোল্ডার ও মোবাইল ফ্রেন্ডলি টচ রেসপন্স
+  const inputStyle = "w-full border border-slate-300 p-3 rounded-xl text-base sm:text-sm text-slate-900 font-medium placeholder:text-slate-600 placeholder:opacity-100 placeholder:font-normal focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 outline-none bg-white transition-all";
+
   return (
-    <div className="p-4 bg-slate-100 min-h-screen font-sans flex flex-col justify-between">
+    <div className="p-3 sm:p-4 bg-slate-100 min-h-screen font-sans flex flex-col justify-between">
       
       {/* --- সাধারণ ব্রাউজার ভিউ --- */}
       <div className="print:hidden w-full flex-grow">
         
         {toast.show && (
-          <div className={`fixed top-5 right-5 z-[200] p-4 rounded-xl shadow-2xl transition-all` +
+          <div className={`fixed top-4 left-4 right-4 sm:left-auto sm:right-5 z-[200] p-4 rounded-xl shadow-2xl transition-all text-center sm:text-left` +
             ` ${toast.type === 'success' ? 'bg-emerald-600' : toast.type === 'error' ? 'bg-red-600' : 'bg-amber-500'} text-white`}>
             <p className="font-bold text-xs uppercase tracking-wider">{toast.message}</p>
           </div>
@@ -273,8 +276,8 @@ export default function IDGenerator() {
         {/* এডমিন মোডে থাকলে রিমাইন্ডার এবং লগআউট বাটন প্রদর্শন */}
         {isAdmin && (
           <div className="max-w-xl mx-auto mb-4 bg-indigo-950 text-white p-3 rounded-xl flex justify-between items-center shadow-lg">
-            <span className="text-xs font-black uppercase tracking-wider">🔒 Database Secured Admin Panel</span>
-            <button onClick={handleAdminLogout} className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-black uppercase transition-colors cursor-pointer">Logout</button>
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider">🔒 Database Secured Admin Panel</span>
+            <button onClick={handleAdminLogout} className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-black uppercase transition-colors cursor-pointer active:scale-95">Logout</button>
           </div>
         )}
 
@@ -282,28 +285,28 @@ export default function IDGenerator() {
           
           {/* Student Entry Form */}
           <div className={`bg-white p-4 sm:p-6 rounded-2xl shadow-xl border-t-8 ${editingId ? 'border-yellow-500' : 'border-indigo-800'}`}>
-            <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase tracking-tighter">Student Registration Form</h2>
+            <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase tracking-tighter text-slate-800">Student Registration Form</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
               
               {isAdmin && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-dashed border-indigo-200 animate-in slide-in-from-top-4">
-                    <input className="border p-2 rounded-lg text-xs" placeholder="COLLEGE NAME" value={collegeName} onChange={e => setCollegeName(e.target.value)} />
-                    <input className="border p-2 rounded-lg text-xs" placeholder="Address" value={collegeAddr} onChange={e => setCollegeAddr(e.target.value)} />
+                    <input className={inputStyle} placeholder="COLLEGE NAME" value={collegeName} onChange={e => setCollegeName(e.target.value)} />
+                    <input className={inputStyle} placeholder="Address" value={collegeAddr} onChange={e => setCollegeAddr(e.target.value)} />
                 </div>
               )}
               
               {/* ফটো ও সিগনেচার আপলোড */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24">
+                  <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24">
                       <span className="text-xs font-extrabold uppercase text-indigo-900 tracking-wider">Upload Student Photo</span>
-                      <span className="text-[10px] text-indigo-500 font-bold mt-1">Select Image File</span>
+                      <span className="text-[10px] text-indigo-600 font-bold mt-1">Select Image File</span>
                       <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'photo')} className="hidden" required={!editingId} />
                   </label>
                   
                   {isAdmin ? (
-                    <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24 animate-in fade-in">
+                    <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24 animate-in fade-in">
                         <span className="text-xs font-extrabold uppercase text-indigo-900 tracking-wider">Principal Sig.</span>
-                        <span className="text-[10px] text-indigo-500 font-bold mt-1">Select Signature File</span>
+                        <span className="text-[10px] text-indigo-600 font-bold mt-1">Select Signature File</span>
                         <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'principal_signature')} className="hidden" />
                     </label>
                   ) : (
@@ -314,32 +317,32 @@ export default function IDGenerator() {
                   )}
               </div>
               
-              <input className="border p-2.5 rounded-xl text-sm" placeholder="Full Student Name" value={formData.student_name} onChange={e => setFormData({...formData, student_name: e.target.value})} required />
+              <input className={inputStyle} placeholder="Full Student Name" value={formData.student_name} onChange={e => setFormData({...formData, student_name: e.target.value})} required />
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input className="border p-2.5 rounded-xl text-sm" placeholder="Roll No" value={formData.class_roll} onChange={e => setFormData({...formData, class_roll: e.target.value})} required />
-                <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} required>
-                  <option value="">Select Class</option>
-                  {classOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                <input className={inputStyle} placeholder="Roll No" value={formData.class_roll} onChange={e => setFormData({...formData, class_roll: e.target.value})} required />
+                <select className={inputStyle} value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} required>
+                  <option value="" className="text-slate-500">Select Class</option>
+                  {classOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
                 </select>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} required>
-                  <option value="">Select Department/Group/Course</option>
-                  {departmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                <select className={inputStyle} value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} required>
+                  <option value="" className="text-slate-500">Select Department/Group/Course</option>
+                  {departmentOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
                 </select>
-                <input className="border p-2.5 rounded-xl text-sm" placeholder="Session" value={formData.session} onChange={e => setFormData({...formData, session: e.target.value})} required />
+                <input className={inputStyle} placeholder="Session" value={formData.session} onChange={e => setFormData({...formData, session: e.target.value})} required />
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                 <input className="border p-2.5 rounded-xl text-sm" placeholder="Mobile No" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} required />
-                 <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.blood_group} onChange={e => setFormData({...formData, blood_group: e.target.value})} required>
-                   <option value="">Select Blood Group</option>
-                   {bloodGroups.map(bg => <option key={bg} value={bg}>{bg}</option>)}
+                 <input className={inputStyle} placeholder="Mobile No" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} required />
+                 <select className={inputStyle} value={formData.blood_group} onChange={e => setFormData({...formData, blood_group: e.target.value})} required>
+                   <option value="" className="text-slate-500">Select Blood Group</option>
+                   {bloodGroups.map(bg => <option key={bg} value={bg} className="text-slate-900">{bg}</option>)}
                  </select>
               </div>
-              <button type="submit" className="p-3 mt-2 rounded-xl font-black uppercase text-white shadow-lg transition-all bg-indigo-700 hover:bg-indigo-800 cursor-pointer">
+              <button type="submit" className="p-3.5 mt-2 rounded-xl font-black uppercase text-white shadow-lg transition-all bg-indigo-700 hover:bg-indigo-800 active:scale-[0.99] cursor-pointer text-sm tracking-wider">
                   Submit Information
               </button>
             </form>
@@ -351,16 +354,16 @@ export default function IDGenerator() {
               
               {/* Search Student */}
               <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-xl border-t-8 border-emerald-600">
-                  <h2 className="text-xl font-black mb-6 text-center uppercase text-emerald-800 tracking-tighter">🔍 Search Student</h2>
+                  <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase text-emerald-800 tracking-tighter">🔍 Search Student</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <input className="border p-2.5 rounded-xl text-sm" placeholder="Roll" value={searchRoll} onChange={e => setSearchRoll(e.target.value)} />
-                      <select className="border p-2.5 rounded-xl text-sm w-full" value={searchClass} onChange={e => setSearchClass(e.target.value)}>
-                          <option value="">Class</option>
-                          {classOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      <input className={inputStyle} placeholder="Roll" value={searchRoll} onChange={e => setSearchRoll(e.target.value)} />
+                      <select className={inputStyle} value={searchClass} onChange={e => setSearchClass(e.target.value)}>
+                          <option value="" className="text-slate-500">Class</option>
+                          {classOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
                       </select>
-                      <input className="border p-2.5 rounded-xl text-sm" placeholder="Session" value={searchSession} onChange={e => setSearchSession(e.target.value)} />
+                      <input className={inputStyle} placeholder="Session" value={searchSession} onChange={e => setSearchSession(e.target.value)} />
                   </div>
-                  <button onClick={handleSearch} className="w-full mt-4 p-3 rounded-xl font-black uppercase text-white bg-emerald-600 shadow-lg cursor-pointer">Search Student</button>
+                  <button onClick={handleSearch} className="w-full mt-4 p-3.5 rounded-xl font-black uppercase text-white bg-emerald-600 active:scale-[0.99] shadow-lg cursor-pointer text-sm">Search Student</button>
               </div>
 
               {/* Print List Widget */}
@@ -369,8 +372,8 @@ export default function IDGenerator() {
                     <h2 className="text-base sm:text-lg font-black uppercase text-rose-800 tracking-tighter">📋 Print List ({printQueue.length})</h2>
                     {printQueue.length > 0 && (
                       <div className="flex gap-2 w-full sm:w-auto">
-                        <button onClick={() => setPrintQueue([])} className="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase cursor-pointer">Clear</button>
-                        <button onClick={handlePrintAndRecord} className="bg-rose-600 text-white px-4 py-1.5 rounded-lg text-xs font-black uppercase shadow-md animate-pulse cursor-pointer">Print {printQueue.length} Cards</button>
+                        <button onClick={() => setPrintQueue([])} className="flex-1 sm:flex-none bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-bold uppercase cursor-pointer">Clear</button>
+                        <button onClick={handlePrintAndRecord} className="flex-1 sm:flex-none bg-rose-600 text-white px-4 py-2 rounded-lg text-xs font-black uppercase shadow-md animate-pulse cursor-pointer">Print {printQueue.length} Cards</button>
                       </div>
                     )}
                   </div>
@@ -501,10 +504,10 @@ export default function IDGenerator() {
                     </div>
 
                     {/* প্রিভিউ এর একশন বাটনসমূহ */}
-                    <div className="mt-6 flex flex-wrap gap-3 justify-center">
-                      <button onClick={() => handleAddToQueue(student)} className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Add to Print List</button>
-                      <button onClick={() => handleEdit(student)} className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Edit</button>
-                      <button onClick={() => { setStudentToDelete(student); setIsModalOpen(true); }} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Delete</button>
+                    <div className="mt-6 flex flex-wrap gap-3 justify-center w-full sm:w-auto">
+                      <button onClick={() => handleAddToQueue(student)} className="flex-1 sm:flex-none bg-rose-500 hover:bg-rose-600 text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Add to Print List</button>
+                      <button onClick={() => handleEdit(student)} className="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Edit</button>
+                      <button onClick={() => { setStudentToDelete(student); setIsModalOpen(true); }} className="flex-1 sm:flex-none bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Delete</button>
                     </div>
 
                   </div>
@@ -655,11 +658,11 @@ export default function IDGenerator() {
                 placeholder="User ID" 
                 value={adminUserId}
                 onChange={e => setAdminUserId(e.target.value)}
-                className="w-full border-2 border-slate-200 rounded-xl p-2.5 text-center font-bold text-sm tracking-widest focus:border-indigo-600 outline-none"
+                className="w-full border-2 border-slate-200 rounded-xl p-3 text-center font-bold text-base tracking-widest focus:border-indigo-600 outline-none placeholder:text-slate-500 placeholder:opacity-100"
                 required
                 autoFocus
               />
-              <button type="submit" className="w-full bg-indigo-800 hover:bg-indigo-900 text-white font-bold p-3 rounded-xl uppercase text-xs tracking-wider transition-colors shadow-md cursor-pointer">
+              <button type="submit" className="w-full bg-indigo-800 hover:bg-indigo-900 active:scale-[0.99] text-white font-bold p-3.5 rounded-xl uppercase text-xs tracking-wider transition-colors shadow-md cursor-pointer">
                 Unlock Dashboard
               </button>
             </form>
@@ -674,8 +677,8 @@ export default function IDGenerator() {
                 <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter underline decoration-red-500">Wait!</h3>
                 <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?</p>
                 <div className="flex gap-4">
-                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel</button>
-                    <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer">Delete</button>
+                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600 active:scale-95">Cancel</button>
+                    <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer active:scale-95">Delete</button>
                 </div>
             </div>
         </div>
