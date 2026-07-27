@@ -529,10 +529,10 @@ export default function IDGenerator() {
               paddedBatch.push(null);
             }
 
-            const frontIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-            const backIndices = [2, 1, 0, 5, 4, 3, 8, 7, 6];
-
+            const frontIndices = [0, 3, 6, 1, 4, 7, 2, 5, 8];
             const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
+
+            const backIndices = [6, 3, 0, 7, 4, 1, 8, 5, 2];
             const backBatchOrdered = backIndices.map(idx => paddedBatch[idx]);
 
             return (
@@ -711,7 +711,7 @@ export default function IDGenerator() {
         @media print { 
           @page {
             size: A4 portrait;
-            margin: 0 !important;
+            margin: 0mm !important;
           }
           html, body {
             width: 210mm !important;
@@ -726,22 +726,28 @@ export default function IDGenerator() {
             display: none !important; 
           }
           .batch-container {
-            display: contents !important;
+            display: block;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
           .print-page {
             width: 210mm !important;
             height: 297mm !important;
+            max-width: 210mm !important;
+            max-height: 297mm !important;
             display: grid !important;
             grid-template-columns: repeat(3, 146pt) !important;
             grid-template-rows: repeat(3, 238pt) !important;
-            gap: 12pt 15pt !important;
-            justify-content: center !important;
-            align-content: center !important;
+            column-gap: 15pt !important;
+            row-gap: 12pt !important;
+            padding-left: 63.64pt !important;
+            padding-right: 63.64pt !important;
+            padding-top: 51.94pt !important;
+            padding-bottom: 51.94pt !important;
             box-sizing: border-box !important;
             page-break-after: always !important;
             break-after: page !important;
             margin: 0 !important;
-            padding: 0 !important;
             overflow: hidden !important;
           }
           .print-page:last-child {
