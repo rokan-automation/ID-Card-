@@ -380,7 +380,7 @@ export default function IDGenerator() {
                       )}
                     </div>
 
-                    {/* ৩টি আলাদা প্রিন্ট মোড বাটন */}
+                    {/* ২টি আলাদা প্রিন্ট মোড বাটন */}
                     {printQueue.length > 0 && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                         <button 
@@ -559,8 +559,8 @@ export default function IDGenerator() {
             return (
               <React.Fragment key={batchIdx}>
                 
-                {/* ১. ফ্রন্ট সাইড পেজ (যদি printMode 'both' অথবা 'front' হয়) */}
-                {(printMode === 'both' || printMode === 'front') && (
+                {/* ১. ফ্রন্ট সাইড পেজ (যদি printMode 'front' হয়) */}
+                {(printMode === 'front' || printMode === 'both') && (
                   <div className="print-page front-page">
                     {frontBatchOrdered.map((student, idx) => {
                       if (!student) return <div key={`empty-front-${idx}`} className="empty-card-spacer"></div>;
@@ -611,8 +611,8 @@ export default function IDGenerator() {
                   </div>
                 )}
 
-                {/* ২. ব্যাক সাইড পেজ (যদি printMode 'both' অথবা 'back' হয়) */}
-                {(printMode === 'both' || printMode === 'back') && (
+                {/* ২. ব্যাক সাইড পেজ (যদি printMode 'back' হয়) */}
+                {(printMode === 'back' || printMode === 'both') && (
                   <div className="print-page back-page">
                     {backBatchOrdered.map((student, idx) => {
                       if (!student) return <div key={`empty-back-${idx}`} className="empty-card-spacer"></div>;
@@ -710,7 +710,7 @@ export default function IDGenerator() {
         </div>
       )}
 
-      {/* Precise CSS Styles for Single-Page Overflow Fix */}
+      {/* Strict CSS Styles for Exact Single-Page Output */}
       <style jsx>{`
         .id-card { 
           width: 146pt; 
@@ -755,9 +755,9 @@ export default function IDGenerator() {
           
           .print-page {
             width: 210mm !important;
-            height: 296mm !important; /* সাব-পিক্সেল ওভারফ্লো সম্পূর্ণ বন্ধ করার জন্য ২৯৬ মিমি সেট করা হলো */
+            height: 295mm !important; /* সেফ সাইজ ২৯৫ মিমি রাখা হয়েছে যাতে কখনোই ২য় পেজ না তৈরি হয় */
             max-width: 210mm !important;
-            max-height: 296mm !important;
+            max-height: 295mm !important;
             display: grid !important;
             grid-template-columns: repeat(3, 146pt) !important;
             grid-template-rows: repeat(3, 238pt) !important;
@@ -765,27 +765,17 @@ export default function IDGenerator() {
             row-gap: 12pt !important;
             padding-left: 22.45mm !important;
             padding-right: 22.45mm !important;
-            padding-top: 17.8mm !important;
-            padding-bottom: 17.8mm !important;
+            padding-top: 17mm !important;
+            padding-bottom: 17mm !important;
             justify-content: center !important;
             box-sizing: border-box !important;
-            
-            page-break-after: always !important;
-            break-after: page !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
             margin: 0 auto !important;
             position: relative !important;
             top: 0 !important;
             left: 0 !important;
             overflow: hidden !important;
-          }
-
-          /* শেষ পেজে যেন অটোমেটিক অতিরিক্ত খালি ২য় পেজ তৈরি না হয় */
-          .print-page:last-child,
-          .print-page:last-of-type {
-            page-break-after: avoid !important;
-            break-after: avoid-page !important;
+            break-after: auto !important;
+            page-break-after: auto !important;
           }
 
           .id-card { 
