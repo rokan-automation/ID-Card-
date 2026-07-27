@@ -538,9 +538,9 @@ export default function IDGenerator() {
 
       </div>
 
-      {/* --- ২য় অংশ: প্রিন্ট-অনলি ৩x৩ গ্রিড এরিয়া --- */}
+      {/* --- ২য় অংশ: প্রিন্ট-অনলি ৩x৩ গ্রিড এরিয়া (Absolute Isolated Context) --- */}
       {isAdmin && (
-        <div className="hidden print:block">
+        <div className="hidden print:block print-container">
           {printBatches.map((batch, batchIdx) => {
             
             const paddedBatch = [...batch];
@@ -710,7 +710,7 @@ export default function IDGenerator() {
         </div>
       )}
 
-      {/* Strict CSS Styles for Exact Single-Page Output */}
+      {/* Absolutely Isolated Print Styles (Fixes 2-Page Overflow Bug Completely) */}
       <style jsx>{`
         .id-card { 
           width: 146pt; 
@@ -739,6 +739,8 @@ export default function IDGenerator() {
             size: A4 portrait;
             margin: 0mm !important;
           }
+          
+          /* ১. সমস্ত মূল পেজ ওভারফ্লো মার্জিন জিরো করে দেওয়া হলো */
           html, body {
             width: 210mm !important;
             height: 100% !important;
@@ -753,11 +755,22 @@ export default function IDGenerator() {
             display: none !important; 
           }
           
+          /* ২. মূল প্রিন্ট কন্টেইনারকে সম্পূর্ণ বিচ্ছিন (Absolute Isolated) করে দেওয়া হলো */
+          .print-container {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 210mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+
+          /* ৩. সেফ উইডথ ও হাইট (290mm) যাতে কোনোভাবেই ২য় পেজ না আসে */
           .print-page {
             width: 210mm !important;
-            height: 295mm !important; /* সেফ সাইজ ২৯৫ মিমি রাখা হয়েছে যাতে কখনোই ২য় পেজ না তৈরি হয় */
+            height: 290mm !important; 
             max-width: 210mm !important;
-            max-height: 295mm !important;
+            max-height: 290mm !important;
             display: grid !important;
             grid-template-columns: repeat(3, 146pt) !important;
             grid-template-rows: repeat(3, 238pt) !important;
@@ -765,17 +778,23 @@ export default function IDGenerator() {
             row-gap: 12pt !important;
             padding-left: 22.45mm !important;
             padding-right: 22.45mm !important;
-            padding-top: 17mm !important;
-            padding-bottom: 17mm !important;
+            padding-top: 15mm !important;
+            padding-bottom: 15mm !important;
             justify-content: center !important;
             box-sizing: border-box !important;
             margin: 0 auto !important;
-            position: relative !important;
-            top: 0 !important;
-            left: 0 !important;
             overflow: hidden !important;
-            break-after: auto !important;
-            page-break-after: auto !important;
+            page-break-after: always !important;
+            break-after: page !important;
+          }
+
+          /* ৪. একক পেজের ক্ষেত্রে পেজ ব্রেক সম্পূর্ণ বন্ধ */
+          .print-page:last-child,
+          .print-page:last-of-type {
+            page-break-after: avoid !important;
+            break-after: avoid-page !important;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
           }
 
           .id-card { 
