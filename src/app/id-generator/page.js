@@ -727,11 +727,12 @@ export default function IDGenerator() {
           .no-print { 
             display: none !important; 
           }
+          
+          /* কন্টেইনারের হাইট/মার্জিন ওভারফ্লো বন্ধ করার জন্য */
           .batch-container {
-            display: block;
-            page-break-after: always !important;
-            break-after: page !important;
+            display: contents !important;
           }
+          
           .print-page {
             width: 210mm !important;
             height: 297mm !important;
@@ -747,15 +748,20 @@ export default function IDGenerator() {
             padding-top: 51.94pt !important;
             padding-bottom: 51.94pt !important;
             box-sizing: border-box !important;
-            page-break-after: always !important;
-            break-after: page !important;
+            
+            /* প্রতিটি পেজ যেন একদম ওপর (Top=0) থেকে স্বাধীনভাবে শুরু হয় */
+            page-break-before: always !important;
+            break-before: page !important;
             margin: 0 !important;
             overflow: hidden !important;
           }
-          .print-page:last-child {
-            page-break-after: avoid !important;
-            break-after: avoid-page !important;
+
+          /* প্রথম পেজের ক্ষেত্রে যেন ফালতু একটি খালি পেজ তৈরি না হয় */
+          .print-page:first-of-type {
+            page-break-before: avoid !important;
+            break-before: avoid !important;
           }
+
           .id-card { 
             border: 0.5pt solid #000 !important; 
             border-radius: 0 !important; 
