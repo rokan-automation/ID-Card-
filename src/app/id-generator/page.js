@@ -529,10 +529,7 @@ export default function IDGenerator() {
               paddedBatch.push(null);
             }
 
-            // সাধারণ গ্রিড অর্ডার (১ থেকে ৯ পরপর)
             const frontIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-            
-            // পাতা উল্টে (Flip Horizontal/Long-Edge) প্রিন্ট করার জন্য সঠিক ব্যাক-অর্ডার
             const backIndices = [2, 1, 0, 5, 4, 3, 8, 7, 6];
 
             const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
@@ -729,9 +726,7 @@ export default function IDGenerator() {
             display: none !important; 
           }
           .batch-container {
-            display: block;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
+            display: contents !important;
           }
           .print-page {
             width: 210mm !important;
@@ -745,7 +740,7 @@ export default function IDGenerator() {
             box-sizing: border-box !important;
             page-break-after: always !important;
             break-after: page !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
           }
@@ -754,7 +749,7 @@ export default function IDGenerator() {
             break-after: avoid-page !important;
           }
           .id-card { 
-           border: 0.5pt solid #000 !important;
+            border: 0.5pt solid #000 !important; 
             border-radius: 0 !important; 
             box-shadow: none !important; 
             box-sizing: border-box !important;
