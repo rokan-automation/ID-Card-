@@ -712,12 +712,12 @@ export default function IDGenerator() {
         
         @media print { 
           @page {
-            size: A4 portrait;
+            size: 210mm 297mm;
             margin: 0mm !important;
           }
           html, body {
             width: 210mm !important;
-            height: 100% !important;
+            height: 297mm !important;
             margin: 0 !important;
             padding: 0 !important;
             background: #ffffff !important;
@@ -731,9 +731,9 @@ export default function IDGenerator() {
           
           .print-page {
             width: 210mm !important;
-            height: 296mm !important; /* সাব-পিক্সেল ওভারফ্লো বন্ধ করতে ২৯৬ মিমি রাখা হয়েছে */
+            height: 297mm !important;
             max-width: 210mm !important;
-            max-height: 296mm !important;
+            max-height: 297mm !important;
             display: grid !important;
             grid-template-columns: repeat(3, 146pt) !important;
             grid-template-rows: repeat(3, 238pt) !important;
@@ -741,20 +741,21 @@ export default function IDGenerator() {
             row-gap: 12pt !important;
             padding-left: 63.64pt !important;
             padding-right: 63.64pt !important;
-            padding-top: 51pt !important;
-            padding-bottom: 51pt !important;
+            padding-top: 51.94pt !important;
+            padding-bottom: 51.94pt !important;
             box-sizing: border-box !important;
             
             page-break-after: always !important;
             break-after: page !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin: 0 auto !important;
-            overflow: hidden !important;
+            margin: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
           }
 
-          .print-page:last-child,
-          .print-page:last-of-type {
+          .print-page:last-child {
             page-break-after: avoid !important;
             break-after: avoid-page !important;
           }
