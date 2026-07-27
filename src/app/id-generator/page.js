@@ -754,7 +754,7 @@ export default function IDGenerator() {
             break-after: avoid-page !important;
           }
           .id-card { 
-            border: 0.5pt solid #000 !important; 
+           border: 0.5pt solid #000 !important;
             border-radius: 0 !important; 
             box-shadow: none !important; 
             box-sizing: border-box !important;
