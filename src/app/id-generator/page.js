@@ -529,10 +529,13 @@ export default function IDGenerator() {
               paddedBatch.push(null);
             }
 
-            const frontIndices = [0, 3, 6, 1, 4, 7, 2, 5, 8];
-            const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
+            // সাধারণ গ্রিড অর্ডার (১ থেকে ৯ পরপর)
+            const frontIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            
+            // পাতা উল্টে (Flip Horizontal/Long-Edge) প্রিন্ট করার জন্য সঠিক ব্যাক-অর্ডার
+            const backIndices = [2, 1, 0, 5, 4, 3, 8, 7, 6];
 
-            const backIndices = [6, 3, 0, 7, 4, 1, 8, 5, 2];
+            const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
             const backBatchOrdered = backIndices.map(idx => paddedBatch[idx]);
 
             return (
