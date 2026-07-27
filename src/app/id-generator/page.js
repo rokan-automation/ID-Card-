@@ -538,7 +538,7 @@ export default function IDGenerator() {
 
       </div>
 
-      {/* --- ২য় অংশ: প্রিন্ট-অনলি ৩x৩ গ্রিড এরিয়া (ডাইনামিক ফ্রন্ট/ব্যাক ফিল্টারিং সহ) --- */}
+      {/* --- ২য় অংশ: প্রিন্ট-অনলি ৩x৩ গ্রিড এরিয়া --- */}
       {isAdmin && (
         <div className="hidden print:block">
           {printBatches.map((batch, batchIdx) => {
@@ -710,7 +710,7 @@ export default function IDGenerator() {
         </div>
       )}
 
-      {/* Precise CSS Styles for Pixel-Perfect A4 Alignment */}
+      {/* Precise CSS Styles for Single-Page Overflow Fix */}
       <style jsx>{`
         .id-card { 
           width: 146pt; 
@@ -736,12 +736,12 @@ export default function IDGenerator() {
         
         @media print { 
           @page {
-            size: 210mm 297mm;
+            size: A4 portrait;
             margin: 0mm !important;
           }
           html, body {
             width: 210mm !important;
-            height: 297mm !important;
+            height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background: #ffffff !important;
@@ -755,9 +755,9 @@ export default function IDGenerator() {
           
           .print-page {
             width: 210mm !important;
-            height: 297mm !important;
+            height: 296mm !important; /* সাব-পিক্সেল ওভারফ্লো সম্পূর্ণ বন্ধ করার জন্য ২৯৬ মিমি সেট করা হলো */
             max-width: 210mm !important;
-            max-height: 297mm !important;
+            max-height: 296mm !important;
             display: grid !important;
             grid-template-columns: repeat(3, 146pt) !important;
             grid-template-rows: repeat(3, 238pt) !important;
@@ -765,8 +765,8 @@ export default function IDGenerator() {
             row-gap: 12pt !important;
             padding-left: 22.45mm !important;
             padding-right: 22.45mm !important;
-            padding-top: 18.32mm !important;
-            padding-bottom: 18.32mm !important;
+            padding-top: 17.8mm !important;
+            padding-bottom: 17.8mm !important;
             justify-content: center !important;
             box-sizing: border-box !important;
             
@@ -778,9 +778,12 @@ export default function IDGenerator() {
             position: relative !important;
             top: 0 !important;
             left: 0 !important;
+            overflow: hidden !important;
           }
 
-          .print-page:last-child {
+          /* শেষ পেজে যেন অটোমেটিক অতিরিক্ত খালি ২য় পেজ তৈরি না হয় */
+          .print-page:last-child,
+          .print-page:last-of-type {
             page-break-after: avoid !important;
             break-after: avoid-page !important;
           }
