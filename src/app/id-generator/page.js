@@ -50,7 +50,7 @@ export default function IDGenerator() {
     checkSavedAdminSession();
   }, []);
 
-  // ব্রাউজার মেমোরিতে আগে থেকে লগইন করা আছে কিনা চেক করা (যাতে বারবার লগইন করতে না হয়)
+  // ব্রাউজার মেমোরিতে আগে থেকে লগইন করা আছে কিনা চেক করা
   const checkSavedAdminSession = () => {
     const savedAdmin = localStorage.getItem('id_generator_admin');
     if (savedAdmin === 'true') {
@@ -257,7 +257,7 @@ export default function IDGenerator() {
 
   const printBatches = chunkArray(printQueue, 9);
 
-  // কমন ইনপুট স্টাইল - স্পষ্ট প্লেসহোল্ডার ও মোবাইল ফ্রেন্ডলি টচ রেসপন্স
+  // কমন ইনপুট স্টাইল
   const inputStyle = "w-full border border-slate-300 p-3 rounded-xl text-base sm:text-sm text-slate-900 font-medium placeholder:text-slate-600 placeholder:opacity-100 placeholder:font-normal focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 outline-none bg-white transition-all";
 
   return (
@@ -529,10 +529,12 @@ export default function IDGenerator() {
               paddedBatch.push(null);
             }
 
-            const frontIndices = [0, 3, 6, 1, 4, 7, 2, 5, 8];
+            // স্বভাবিক ৩x৩ ক্রম (বাম থেকে ডানে, ওপর থেকে নিচে)
+            const frontIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
             const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
 
-            const backIndices = [6, 3, 0, 7, 4, 1, 8, 5, 2];
+            // ব্যাক সাইডের জন্য অনুভূমিক মিরর ব্যাক-টু-ব্যাক গ্রিড ম্যাপিং
+            const backIndices = [2, 1, 0, 5, 4, 3, 8, 7, 6];
             const backBatchOrdered = backIndices.map(idx => paddedBatch[idx]);
 
             return (
@@ -727,8 +729,8 @@ export default function IDGenerator() {
           }
           .batch-container {
             display: block;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
+            page-break-after: always !important;
+            break-after: page !important;
           }
           .print-page {
             width: 210mm !important;
