@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabase'; 
 
 export default function IDGenerator() {
@@ -50,7 +50,7 @@ export default function IDGenerator() {
     checkSavedAdminSession();
   }, []);
 
-  // ব্রাউজার মেমোরিতে আগে থেকে লগইন করা আছে কিনা চেক করা
+  // ব্রাউজার মেমোরিতে আগে থেকে লগইন করা আছে কিনা চেক করা (যাতে বারবার লগইন করতে না হয়)
   const checkSavedAdminSession = () => {
     const savedAdmin = localStorage.getItem('id_generator_admin');
     if (savedAdmin === 'true') {
@@ -214,6 +214,7 @@ export default function IDGenerator() {
     try {
       showToast("Verifying Admin ID...", "warning");
       
+      // নতুন admin_settings টেবিল থেকে এন্ট্রি মেলানো হচ্ছে
       const { data, error } = await supabase
         .from('admin_settings')
         .select('*')
@@ -223,7 +224,7 @@ export default function IDGenerator() {
         showToast(error.message, "error");
       } else if (data && data.length > 0) {
         setIsAdmin(true);
-        localStorage.setItem('id_generator_admin', 'true');
+        localStorage.setItem('id_generator_admin', 'true'); // ব্রাউজার মেমোরিতে সেশন সেভ রাখা
         setShowLoginModal(false);
         setAdminUserId('');
         fetchStudents();
@@ -239,7 +240,7 @@ export default function IDGenerator() {
   // এডমিন লগআউট হ্যান্ডলার
   const handleAdminLogout = () => {
     setIsAdmin(false);
-    localStorage.removeItem('id_generator_admin');
+    localStorage.removeItem('id_generator_admin'); // ব্রাউজার মেমোরি থেকে সেশন মুছে ফেলা
     setFilteredStudents([]);
     setPrintQueue([]);
     showToast("Logged out from admin panel", "info");
@@ -257,17 +258,14 @@ export default function IDGenerator() {
 
   const printBatches = chunkArray(printQueue, 9);
 
-  // কমন ইনপুট স্টাইল
-  const inputStyle = "w-full border border-slate-300 p-3 rounded-xl text-base sm:text-sm text-slate-900 font-medium placeholder:text-slate-600 placeholder:opacity-100 placeholder:font-normal focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 outline-none bg-white transition-all";
-
   return (
-    <div className="p-3 sm:p-4 bg-slate-100 min-h-screen font-sans flex flex-col justify-between">
+    <div className="p-4 bg-slate-100 min-h-screen font-sans flex flex-col justify-between">
       
       {/* --- সাধারণ ব্রাউজার ভিউ --- */}
       <div className="print:hidden w-full flex-grow">
         
         {toast.show && (
-          <div className={`fixed top-4 left-4 right-4 sm:left-auto sm:right-5 z-[200] p-4 rounded-xl shadow-2xl transition-all text-center sm:text-left` +
+          <div className={`fixed top-5 right-5 z-[200] p-4 rounded-xl shadow-2xl transition-all` +
             ` ${toast.type === 'success' ? 'bg-emerald-600' : toast.type === 'error' ? 'bg-red-600' : 'bg-amber-500'} text-white`}>
             <p className="font-bold text-xs uppercase tracking-wider">{toast.message}</p>
           </div>
@@ -276,8 +274,8 @@ export default function IDGenerator() {
         {/* এডমিন মোডে থাকলে রিমাইন্ডার এবং লগআউট বাটন প্রদর্শন */}
         {isAdmin && (
           <div className="max-w-xl mx-auto mb-4 bg-indigo-950 text-white p-3 rounded-xl flex justify-between items-center shadow-lg">
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider">🔒 Database Secured Admin Panel</span>
-            <button onClick={handleAdminLogout} className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-black uppercase transition-colors cursor-pointer active:scale-95">Logout</button>
+            <span className="text-xs font-black uppercase tracking-wider">🔒 Database Secured Admin Panel</span>
+            <button onClick={handleAdminLogout} className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-black uppercase transition-colors cursor-pointer">Logout</button>
           </div>
         )}
 
@@ -285,28 +283,29 @@ export default function IDGenerator() {
           
           {/* Student Entry Form */}
           <div className={`bg-white p-4 sm:p-6 rounded-2xl shadow-xl border-t-8 ${editingId ? 'border-yellow-500' : 'border-indigo-800'}`}>
-            <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase tracking-tighter text-slate-800">Student Registration Form</h2>
+            <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase tracking-tighter">Student Registration Form</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
               
+              {/* এডমিন হলে কলেজের নাম, অ্যাড্রেস পরিবর্তন করতে পারবে, শিক্ষার্থী মোডে এটি হাইড থাকবে */}
               {isAdmin && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-dashed border-indigo-200 animate-in slide-in-from-top-4">
-                    <input className={inputStyle} placeholder="COLLEGE NAME" value={collegeName} onChange={e => setCollegeName(e.target.value)} />
-                    <input className={inputStyle} placeholder="Address" value={collegeAddr} onChange={e => setCollegeAddr(e.target.value)} />
+                    <input className="border p-2 rounded-lg text-xs" placeholder="COLLEGE NAME" value={collegeName} onChange={e => setCollegeName(e.target.value)} />
+                    <input className="border p-2 rounded-lg text-xs" placeholder="Address" value={collegeAddr} onChange={e => setCollegeAddr(e.target.value)} />
                 </div>
               )}
               
               {/* ফটো ও সিগনেচার আপলোড */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24">
+                  <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24">
                       <span className="text-xs font-extrabold uppercase text-indigo-900 tracking-wider">Upload Student Photo</span>
-                      <span className="text-[10px] text-indigo-600 font-bold mt-1">Select Image File</span>
+                      <span className="text-[10px] text-indigo-500 font-bold mt-1">Select Image File</span>
                       <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'photo')} className="hidden" required={!editingId} />
                   </label>
                   
                   {isAdmin ? (
-                    <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24 animate-in fade-in">
+                    <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 transition-colors p-4 rounded-xl border-2 border-dotted border-indigo-300 flex flex-col items-center justify-center text-center h-24 animate-in fade-in">
                         <span className="text-xs font-extrabold uppercase text-indigo-900 tracking-wider">Principal Sig.</span>
-                        <span className="text-[10px] text-indigo-600 font-bold mt-1">Select Signature File</span>
+                        <span className="text-[10px] text-indigo-500 font-bold mt-1">Select Signature File</span>
                         <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'principal_signature')} className="hidden" />
                     </label>
                   ) : (
@@ -317,32 +316,32 @@ export default function IDGenerator() {
                   )}
               </div>
               
-              <input className={inputStyle} placeholder="Full Student Name" value={formData.student_name} onChange={e => setFormData({...formData, student_name: e.target.value})} required />
+              <input className="border p-2.5 rounded-xl text-sm" placeholder="Full Student Name" value={formData.student_name} onChange={e => setFormData({...formData, student_name: e.target.value})} required />
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input className={inputStyle} placeholder="Roll No" value={formData.class_roll} onChange={e => setFormData({...formData, class_roll: e.target.value})} required />
-                <select className={inputStyle} value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} required>
-                  <option value="" className="text-slate-500">Select Class</option>
-                  {classOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
+                <input className="border p-2.5 rounded-xl text-sm" placeholder="Roll No" value={formData.class_roll} onChange={e => setFormData({...formData, class_roll: e.target.value})} required />
+                <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} required>
+                  <option value="">Select Class</option>
+                  {classOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <select className={inputStyle} value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} required>
-                  <option value="" className="text-slate-500">Select Department/Group/Course</option>
-                  {departmentOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
+                <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} required>
+                  <option value="">Select Department/Group/Course</option>
+                  {departmentOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
-                <input className={inputStyle} placeholder="Session" value={formData.session} onChange={e => setFormData({...formData, session: e.target.value})} required />
+                <input className="border p-2.5 rounded-xl text-sm" placeholder="Session" value={formData.session} onChange={e => setFormData({...formData, session: e.target.value})} required />
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                 <input className={inputStyle} placeholder="Mobile No" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} required />
-                 <select className={inputStyle} value={formData.blood_group} onChange={e => setFormData({...formData, blood_group: e.target.value})} required>
-                   <option value="" className="text-slate-500">Select Blood Group</option>
-                   {bloodGroups.map(bg => <option key={bg} value={bg} className="text-slate-900">{bg}</option>)}
+                 <input className="border p-2.5 rounded-xl text-sm" placeholder="Mobile No" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} required />
+                 <select className="border p-2.5 rounded-xl text-sm w-full" value={formData.blood_group} onChange={e => setFormData({...formData, blood_group: e.target.value})} required>
+                   <option value="">Select Blood Group</option>
+                   {bloodGroups.map(bg => <option key={bg} value={bg}>{bg}</option>)}
                  </select>
               </div>
-              <button type="submit" className="p-3.5 mt-2 rounded-xl font-black uppercase text-white shadow-lg transition-all bg-indigo-700 hover:bg-indigo-800 active:scale-[0.99] cursor-pointer text-sm tracking-wider">
+              <button type="submit" className="p-3 mt-2 rounded-xl font-black uppercase text-white shadow-lg transition-all bg-indigo-700 hover:bg-indigo-800 cursor-pointer">
                   Submit Information
               </button>
             </form>
@@ -354,16 +353,16 @@ export default function IDGenerator() {
               
               {/* Search Student */}
               <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-xl border-t-8 border-emerald-600">
-                  <h2 className="text-lg sm:text-xl font-black mb-6 text-center uppercase text-emerald-800 tracking-tighter">🔍 Search Student</h2>
+                  <h2 className="text-xl font-black mb-6 text-center uppercase text-emerald-800 tracking-tighter">🔍 Search Student</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <input className={inputStyle} placeholder="Roll" value={searchRoll} onChange={e => setSearchRoll(e.target.value)} />
-                      <select className={inputStyle} value={searchClass} onChange={e => setSearchClass(e.target.value)}>
-                          <option value="" className="text-slate-500">Class</option>
-                          {classOptions.map(opt => <option key={opt} value={opt} className="text-slate-900">{opt}</option>)}
+                      <input className="border p-2.5 rounded-xl text-sm" placeholder="Roll" value={searchRoll} onChange={e => setSearchRoll(e.target.value)} />
+                      <select className="border p-2.5 rounded-xl text-sm w-full" value={searchClass} onChange={e => setSearchClass(e.target.value)}>
+                          <option value="">Class</option>
+                          {classOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                       </select>
-                      <input className={inputStyle} placeholder="Session" value={searchSession} onChange={e => setSearchSession(e.target.value)} />
+                      <input className="border p-2.5 rounded-xl text-sm" placeholder="Session" value={searchSession} onChange={e => setSearchSession(e.target.value)} />
                   </div>
-                  <button onClick={handleSearch} className="w-full mt-4 p-3.5 rounded-xl font-black uppercase text-white bg-emerald-600 active:scale-[0.99] shadow-lg cursor-pointer text-sm">Search Student</button>
+                  <button onClick={handleSearch} className="w-full mt-4 p-3 rounded-xl font-black uppercase text-white bg-emerald-600 shadow-lg cursor-pointer">Search Student</button>
               </div>
 
               {/* Print List Widget */}
@@ -372,8 +371,8 @@ export default function IDGenerator() {
                     <h2 className="text-base sm:text-lg font-black uppercase text-rose-800 tracking-tighter">📋 Print List ({printQueue.length})</h2>
                     {printQueue.length > 0 && (
                       <div className="flex gap-2 w-full sm:w-auto">
-                        <button onClick={() => setPrintQueue([])} className="flex-1 sm:flex-none bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-bold uppercase cursor-pointer">Clear</button>
-                        <button onClick={handlePrintAndRecord} className="flex-1 sm:flex-none bg-rose-600 text-white px-4 py-2 rounded-lg text-xs font-black uppercase shadow-md animate-pulse cursor-pointer">Print {printQueue.length} Cards</button>
+                        <button onClick={() => setPrintQueue([])} className="bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase cursor-pointer">Clear</button>
+                        <button onClick={handlePrintAndRecord} className="bg-rose-600 text-white px-4 py-1.5 rounded-lg text-xs font-black uppercase shadow-md animate-pulse cursor-pointer">Print {printQueue.length} Cards</button>
                       </div>
                     )}
                   </div>
@@ -475,8 +474,9 @@ export default function IDGenerator() {
                         <div className="absolute bottom-0 w-full h-[10pt] bg-gradient-to-r from-green-800 via-emerald-500 to-green-900 border-t border-yellow-400"></div>
                       </div>
 
-                      {/* প্রিভিউ ব্যাক সাইড */}
-                      <div className="id-card portrait relative overflow-hidden bg-white border border-slate-300 shadow-md flex-shrink-0 scale-95 xs:scale-100">
+                      {/* প্রিভিউ ব্যাক সাইড (হেডার নিচে রাখার জন্য ১৮০ ডিগ্রী উল্টানো হলো) */}
+                      <div className="id-card portrait relative overflow-hidden bg-white border border-slate-300 shadow-md flex-shrink-0 scale-95 xs:scale-100 rotate-180">
+                         <img src="/Logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
@@ -504,10 +504,10 @@ export default function IDGenerator() {
                     </div>
 
                     {/* প্রিভিউ এর একশন বাটনসমূহ */}
-                    <div className="mt-6 flex flex-wrap gap-3 justify-center w-full sm:w-auto">
-                      <button onClick={() => handleAddToQueue(student)} className="flex-1 sm:flex-none bg-rose-500 hover:bg-rose-600 text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Add to Print List</button>
-                      <button onClick={() => handleEdit(student)} className="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Edit</button>
-                      <button onClick={() => { setStudentToDelete(student); setIsModalOpen(true); }} className="flex-1 sm:flex-none bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer active:scale-95">Delete</button>
+                    <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                      <button onClick={() => handleAddToQueue(student)} className="bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Add to Print List</button>
+                      <button onClick={() => handleEdit(student)} className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Edit</button>
+                      <button onClick={() => { setStudentToDelete(student); setIsModalOpen(true); }} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold text-xs uppercase shadow-md transition-colors cursor-pointer">Delete</button>
                     </div>
 
                   </div>
@@ -529,16 +529,14 @@ export default function IDGenerator() {
               paddedBatch.push(null);
             }
 
-            // স্বভাবিক ৩x৩ ক্রম (বাম থেকে ডানে, ওপর থেকে নিচে)
-            const frontIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            const frontIndices = [0, 3, 6, 1, 4, 7, 2, 5, 8];
             const frontBatchOrdered = frontIndices.map(idx => paddedBatch[idx]);
 
-            // ব্যাক সাইডের জন্য অনুভূমিক মিরর ব্যাক-টু-ব্যাক গ্রিড ম্যাপিং
-            const backIndices = [2, 1, 0, 5, 4, 3, 8, 7, 6];
+            const backIndices = [6, 3, 0, 7, 4, 1, 8, 5, 2];
             const backBatchOrdered = backIndices.map(idx => paddedBatch[idx]);
 
             return (
-              <React.Fragment key={batchIdx}>
+              <div key={batchIdx} className="batch-container">
                 
                 {/* ফ্রন্ট সাইড পেজ */}
                 <div className="print-page">
@@ -590,13 +588,14 @@ export default function IDGenerator() {
                   })}
                 </div>
 
-                {/* ব্যাক সাইড পেজ */}
+                {/* ব্যাক সাইড পেজ (প্রিন্টের জন্য ১৮০ ডিগ্রী ঘুরিয়ে উল্টে দেওয়া হলো) */}
                 <div className="print-page">
                   {backBatchOrdered.map((student, idx) => {
                     if (!student) return <div key={`empty-back-${idx}`} className="empty-card-spacer"></div>;
 
                     return (
-                      <div key={`back-${student.id}`} className="id-card portrait relative overflow-hidden bg-white border border-slate-400 text-black">
+                      <div key={`back-${student.id}`} className="id-card portrait relative overflow-hidden bg-white border border-slate-400 text-black rotate-180">
+                         <img src="/Logo1.png" className="absolute top-[44%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[165px] opacity-[0.12] z-0 pointer-events-none" alt="Watermark" />
                          <div className="relative z-10 bg-indigo-800 h-[30pt] flex items-center justify-center text-white font-bold text-[7.5pt] uppercase italic tracking-widest">General Instructions</div>
                          <div className="relative z-10 p-4 h-[208pt] flex flex-col justify-between items-center text-center">
                             <div className="w-full">
@@ -624,7 +623,7 @@ export default function IDGenerator() {
                   })}
                 </div>
 
-              </React.Fragment>
+              </div>
             );
           })}
         </div>
@@ -642,7 +641,7 @@ export default function IDGenerator() {
         )}
       </footer>
 
-      {/* --- এডমিন লগইন মোডাল --- */}
+      {/* --- এডমিন লগইন মোডাল (শুধুমাত্র একটি User ID বক্স) --- */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="bg-white rounded-[2rem] p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border-4 border-slate-100 relative animate-in fade-in zoom-in-95 duration-200">
@@ -660,11 +659,11 @@ export default function IDGenerator() {
                 placeholder="User ID" 
                 value={adminUserId}
                 onChange={e => setAdminUserId(e.target.value)}
-                className="w-full border-2 border-slate-200 rounded-xl p-3 text-center font-bold text-base tracking-widest focus:border-indigo-600 outline-none placeholder:text-slate-500 placeholder:opacity-100"
+                className="w-full border-2 border-slate-200 rounded-xl p-2.5 text-center font-bold text-sm tracking-widest focus:border-indigo-600 outline-none"
                 required
                 autoFocus
               />
-              <button type="submit" className="w-full bg-indigo-800 hover:bg-indigo-900 active:scale-[0.99] text-white font-bold p-3.5 rounded-xl uppercase text-xs tracking-wider transition-colors shadow-md cursor-pointer">
+              <button type="submit" className="w-full bg-indigo-800 hover:bg-indigo-900 text-white font-bold p-3 rounded-xl uppercase text-xs tracking-wider transition-colors shadow-md cursor-pointer">
                 Unlock Dashboard
               </button>
             </form>
@@ -679,14 +678,14 @@ export default function IDGenerator() {
                 <h3 className="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter underline decoration-red-500">Wait!</h3>
                 <p className="text-slate-500 text-sm mb-8 font-bold italic uppercase">Permanently delete this record?</p>
                 <div className="flex gap-4">
-                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600 active:scale-95">Cancel</button>
-                    <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer active:scale-95">Delete</button>
+                    <button onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-100 py-3 rounded-2xl font-black uppercase text-xs text-slate-600">Cancel</button>
+                    <button onClick={confirmDelete} className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-black uppercase text-xs shadow-lg cursor-pointer">Delete</button>
                 </div>
             </div>
         </div>
       )}
 
-      {/* Precise CSS Styles for Pixel-Perfect A4 Alignment */}
+      {/* CSS Styles */}
       <style jsx>{`
         .id-card { 
           width: 146pt; 
@@ -712,58 +711,46 @@ export default function IDGenerator() {
         
         @media print { 
           @page {
-            size: A4 portrait;
-            margin: 0mm !important;
-          }
-          html, body {
-            width: 210mm !important;
-            height: 100% !important;
+            size: A4;
             margin: 0 !important;
-            padding: 0 !important;
-            background: #ffffff !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            overflow: hidden !important;
+          }
+          body { 
+            background: white !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
           }
           .no-print { 
             display: none !important; 
           }
-          
-          .print-page {
-            width: 210mm !important;
-            height: 296mm !important; /* সাব-পিক্সেল ওভারফ্লো বন্ধ করতে ২৯৬ মিমি রাখা হয়েছে */
-            max-width: 210mm !important;
-            max-height: 296mm !important;
-            display: grid !important;
-            grid-template-columns: repeat(3, 146pt) !important;
-            grid-template-rows: repeat(3, 238pt) !important;
-            column-gap: 15pt !important;
-            row-gap: 12pt !important;
-            padding-left: 63.64pt !important;
-            padding-right: 63.64pt !important;
-            padding-top: 51pt !important;
-            padding-bottom: 51pt !important;
-            box-sizing: border-box !important;
-            
-            page-break-after: always !important;
-            break-after: page !important;
+          .batch-container {
+            display: block;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
+          }
+          .print-page {
+            width: 210mm;
+            height: 297mm;
+            display: grid !important;
+            grid-template-columns: repeat(3, 146pt);
+            grid-template-rows: repeat(3, 238pt);
+            gap: 15pt;
+            justify-content: center;
+            align-content: center;
+            box-sizing: border-box;
+            page-break-after: always !important;
+            break-after: page !important;
             margin: 0 auto !important;
+            padding: 0 !important;
             overflow: hidden !important;
           }
-
-          .print-page:last-child,
-          .print-page:last-of-type {
+          .print-page:last-child {
             page-break-after: avoid !important;
             break-after: avoid-page !important;
           }
-
           .id-card { 
             border: 0.5pt solid #000 !important; 
-            border-radius: 0 !important; 
+            border-radius: 0; 
             box-shadow: none !important; 
-            box-sizing: border-box !important;
           }
         }
       `}</style>
