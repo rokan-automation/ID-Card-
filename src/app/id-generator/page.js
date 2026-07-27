@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabase'; 
 
 export default function IDGenerator() {
@@ -538,7 +538,7 @@ export default function IDGenerator() {
             const backBatchOrdered = backIndices.map(idx => paddedBatch[idx]);
 
             return (
-              <div key={batchIdx} className="batch-container">
+              <React.Fragment key={batchIdx}>
                 
                 {/* ফ্রন্ট সাইড পেজ */}
                 <div className="print-page">
@@ -624,7 +624,7 @@ export default function IDGenerator() {
                   })}
                 </div>
 
-              </div>
+              </React.Fragment>
             );
           })}
         </div>
@@ -712,7 +712,7 @@ export default function IDGenerator() {
         
         @media print { 
           @page {
-            size: A4 portrait;
+            size: 210mm 297mm;
             margin: 0mm !important;
           }
           html, body {
@@ -720,17 +720,13 @@ export default function IDGenerator() {
             height: 297mm !important;
             margin: 0 !important;
             padding: 0 !important;
-            background: white !important;
+            background: #ffffff !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            overflow: hidden !important;
           }
           .no-print { 
             display: none !important; 
-          }
-          
-          /* কন্টেইনারের হাইট/মার্জিন ওভারফ্লো বন্ধ করার জন্য */
-          .batch-container {
-            display: contents !important;
           }
           
           .print-page {
@@ -749,17 +745,19 @@ export default function IDGenerator() {
             padding-bottom: 51.94pt !important;
             box-sizing: border-box !important;
             
-            /* প্রতিটি পেজ যেন একদম ওপর (Top=0) থেকে স্বাধীনভাবে শুরু হয় */
-            page-break-before: always !important;
-            break-before: page !important;
+            page-break-after: always !important;
+            break-after: page !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             margin: 0 !important;
-            overflow: hidden !important;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
           }
 
-          /* প্রথম পেজের ক্ষেত্রে যেন ফালতু একটি খালি পেজ তৈরি না হয় */
-          .print-page:first-of-type {
-            page-break-before: avoid !important;
-            break-before: avoid !important;
+          .print-page:last-child {
+            page-break-after: avoid !important;
+            break-after: avoid-page !important;
           }
 
           .id-card { 
