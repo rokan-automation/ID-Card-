@@ -739,17 +739,18 @@ export default function IDGenerator() {
             grid-template-rows: repeat(3, 238pt) !important;
             column-gap: 15pt !important;
             row-gap: 12pt !important;
-            padding-left: 63.64pt !important;
-            padding-right: 63.64pt !important;
+            padding-left: 22.45mm !important;
+            padding-right: 22.45mm !important;
             padding-top: 51.94pt !important;
             padding-bottom: 51.94pt !important;
+            justify-content: center !important;
             box-sizing: border-box !important;
             
             page-break-after: always !important;
             break-after: page !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
             position: relative !important;
             top: 0 !important;
             left: 0 !important;
